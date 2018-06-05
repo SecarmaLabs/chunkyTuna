@@ -1,0 +1,15 @@
+Misc TODOs:
+
+ * Try php/nginx (fcgi)
+ * heartbeat in aspx (with thread)
+ * why php many cookies?!?
+ * self-destruct
+ * pw generator/templating
+ * cmdline groups and easier options
+ * Signals?  https://stackoverflow.com/questions/44348083/how-to-send-sigint-ctrl-c-to-current-remote-process-over-ssh-without-t-optio
+    or:  '\x03' 
+ 
+ * node:
+  * https://nodejs.org/api/stream.html
+  * https://nodejs.org/api/http.html
+  * https://nodejs.org/api/net.html

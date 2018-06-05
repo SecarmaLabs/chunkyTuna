@@ -1,0 +1,24 @@
+Quickstart
+==========
+
+Just drop the .jsp file. 
+
+Tested on the latest tomcat Docker container (as per early 2018).
+
+Testing
+=======
+
+Use the `demo/demo-*` scripts and the target container.
+
+Alternatively, this is the simplest set-up: a docker webserver connecting back to the host...
+
+        docker build -t listener-jsp .
+        docker run -it --rm -p 8888:8080 -v $(pwd):/usr/local/tomcat/webapps/c --name listener-jsp listener-jsp
+        nc -lnvp 1234
+        python chunkytuna.py http://localhost:8888/c/chunkytuna.jsp  -t 172.17.0.1:1234 -r 127.0.0.1:12345 C
+
+Or use ssh:
+
+    # make sure docker can connect to port 22 of the host and that sshd is running...
+    python chunkytuna.py http://localhost:8888/c/chunkytuna.jsp  -t 172.17.0.1:22 -r 127.0.0.1:12346 C
+    ssh localhost -p 12346

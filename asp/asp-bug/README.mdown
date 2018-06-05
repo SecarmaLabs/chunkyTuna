@@ -1,0 +1,52 @@
+This directory contains a PoC to trigger what I think is an ASP bug that causes
+the first message to be sent via chunked-encoding to be delayed by 120s.
+
+This PoC is to demonstrate that the problem exists server-side, either in the ASPX
+implemenation on on IIS.
+
+Tested on: Windows 2012 (Evaluation version) early 2018.
+
+To execute:
+
+1. Install and start IIS and copy `poc.aspx` into `C:\inetpub\wwwroot`. The
+   assumption is that IIS is listening on `http://192.168.56.101:80` (default
+   VirtualBox host-only networking)
+
+2. Open a listener on port 1234 (let's call this the 'client'):
+
+        ncat -lnvp 1234
+
+3. Initialise the session:
+
+        ./nop.sh
+
+4. Tells the PoC webshell to connect back to 192.168.56.1:1234
+
+        ./init.sh
+
+   The 'client' terminal should see 'Init'
+
+5. Tell the PoC to start listening for inbound chunked-encodding connections:
+
+        ./listen.sh
+
+   The output should be an open CURL connection saying:
+
+        Server-side listener loop starting
+
+    Test it by typing something on the 'client' terminal; it will appear right
+    away in the 'listen' terminal.
+
+6. Try sending some stuff:
+
+        ./send.sh
+
+7. After approx. 120s, the string `client` should appear on the 'client' terminal
+
+8. The connection will automatically close; send stuff again:
+
+        ./send.sh
+
+    This time the string 'client' will appear immediately.
+
+I have no idea why this is happening.

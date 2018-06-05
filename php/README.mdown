@@ -1,0 +1,72 @@
+# ChunkyTuna with PHP
+
+Usage: drop chunkytuna.php on the web server.
+
+Tested on: php 5.x on apache (Docker image)
+
+## Quickstart
+
+Set up the docker container:
+
+        docker build -t listener-php .
+        docker run -it --rm -v $(pwd):/var/www/html --name listener-php listener-php
+
+Run a listener: this is the TARGET:
+
+        nc -lnvp 1234
+
+Run ChunkyTuna:
+
+        chunkytuna.py http://172.17.0.2:80/callback.php -r 127.0.0.1:12345 -t 172.17.0.1:1234 C -d
+
+## Notes
+
+### PHP might not have socket support
+
+TUNNA might not work on the docker container because php doesn't have socket support. See the comments in the Dockerfile to enable it.
+
+ > Call to undefined function socket_create()? 
+
+PHP does not come natively with support for sockets. Also, you can't gracefully handle a fatal error such as a call to an undefined functions. So I can't try sockets and then fallback to streams.
+
+See also https://stackoverflow.com/questions/6137823/fatal-error-call-to-undefined-function-socket-create.
+
+### PHP has no native threads support
+
+Ok then...
+
+### Sessions?
+
+ > PHP writes its session data to a file by default. When a request is made to
+ > a PHP script that starts the session (session_start()), this session file is
+ > locked. What this means is that if your web page makes numerous requests to
+ > PHP scripts, for instance, for loading content via Ajax, each request could
+ > be locking the session and preventing the other requests from completing.
+
+From [here](http://konrness.com/php5/how-to-prevent-blocking-php-requests/). 
+
+Also, somehow PHP can't persist ...persistent sockets across sessions. It disconnects, or it comes up as blank -- perhaps because the session is per-process, per-server and in the Apache set-up there's more than one process?
+
+Unlike JSP and ASP, in PHP the socket is not saved to the session. Instead, the target IP and port are saved.
+
+### Troubles with apache and reading from chunked encoding
+
+ * `apache2` doesn't pass chunked stuff to php? https://bugs.php.net/bug.php?id=50210 and https://bugs.php.net/bug.php?id=51191
+
+Note that when using a the official php:apache docker container, PHP will buffer the content of a `transfer-encoding: chunked` transfer **until it has been received completely**. This is not what we want. Instead, PHP should receive data as it arrives without buffering. To do so, set `enable_post_data_reading` to `false` in PHP's configuration files as instructed  [here](http://php.net/manual/en/ini.core.php#ini.enable-post-data-reading). See also [this](https://stackoverflow.com/questions/18664696/howto-make-apache-stop-buffering-post-data).
+
+See also [my question on SO](https://stackoverflow.com/questions/44245156/php-cannot-perform-multiple-fread-calls-on-php-input). 
+
+And also [this one](https://stackoverflow.com/a/9999553/204634).
+
+However:
+
+    Disabling this option causes $_POST and $_FILES not to be populated. The only way to read postdata will then be through the php://input stream wrapper. This can be useful to proxy requests or to process the POST data in a memory efficient fashion.
+
+In conclusion:
+
+ * We send one POST per client-message, while all server data comes through the same transfer-encoding: chunked response.
+
+### SIGWINCH kills Apache
+
+It is a known behaviour. `SIGWINCH` is sent when the terminal is resized (e.g. when resizing a terminal running docker and apace).

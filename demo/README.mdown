@@ -1,0 +1,33 @@
+Various demo for php, jsp, asp. 
+
+## Run the main demo (uses JSP)
+
+ 1. Run the web server container from the appropriate directory e.g.
+
+        cd jsp
+        ./build-and-run-docker.sh
+
+ 2. In a different terminal, run the target container:
+
+        cd demo/target-container
+        ./build-and-run-docker.sh
+
+ 3. In yet another terminal, run ChunkyTuna:
+
+        ./demo/demo-connect.sh
+
+ 4. Now open a web browser on http://localhost:12345
+
+ 5. Ctrl-c in ChunkyTuna; the demo will now connect to the target's ssh port
+
+ 6. Run:
+
+        ssh root@localhost -p 4444
+
+
+If it doesn't work, make sure your firewall is not blocking connections to/from docker or vboxnet0. See the file `demo/firewall.sh`.
+
+## Run the other demo (PHP, ASPX)
+
+Please note the files in demo/php, demo/asp and demo/jsp are in various state and might not work out of the box, use them as inspiration.
+
