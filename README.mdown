@@ -9,6 +9,9 @@ For details see [Secarma's blog](https://blog.secarma.co.uk/labs/chunkytuna-a-we
 
 Inspired by [Tunna](https://github.com/SECFORCE/Tunna/).
 
+Author: Lorenzo Grespan
+Initial PoC: Sam T.
+
 Modalities:
 
  *  Server connects to target directly ("Connect")
