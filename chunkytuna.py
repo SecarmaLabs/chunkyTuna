@@ -26,7 +26,7 @@ if sys.version_info.major >= 3:
 else:
     from urlparse import urlparse
 
-__version__ = 0.9
+__version__ = '0.9.1'
 
 log = logging.getLogger(__name__)
 sh = logging.StreamHandler()
