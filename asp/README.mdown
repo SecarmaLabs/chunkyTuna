@@ -3,7 +3,9 @@ Usage
 
 Just drop the file in the webroot.
 
-Tested with: Windows Server 2012 + IIS. 
+Tested with: 
+ * Windows Server 2012 + IIS (chunkytuna.aspx)
+ * Windows Server 2008 + IIS (chunkytuna-asp20.aspx) for ASP.NET 2.0.x
 
 
 Testing
