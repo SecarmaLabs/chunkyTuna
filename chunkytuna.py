@@ -183,8 +183,21 @@ class SocketFactory(object):
             log.debug("No SSL")
             websock = rawsock
 
+        _port = self.victim_url.port
+        if _port is None:
+            if self.victim_url.scheme == b'http':
+                log.debug("Assuming remote port: 80")
+                _port = 80
+            elif self.victim_url.scheme == b'https':
+                log.debug("Assuming remote port: 443")
+                _port = 443
+            else:
+                print("[!] No port specified and unknown scheme")
+                raise SystemExit
+
         try:
-            websock.connect((self.victim_url.hostname, self.victim_url.port))
+            # websock.connect((self.victim_url.hostname, self.victim_url.port))
+            websock.connect((self.victim_url.hostname, _port))
         except socket.error as e:
             raise SystemExit(
                 "[*] Cannot establish baseline connection to: {}".format(
